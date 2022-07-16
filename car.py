@@ -67,14 +67,11 @@ class Car():
             while (target > self.sensors.yaw):
                 self.sensors.update()
                 self.rotate(deg)
-                sleep(0.01)
         elif target < self.sensors.yaw:
             while (target < self.sensors.yaw):
                 self.sensors.update()
                 self.rotate(deg)
-                sleep(0.01)
-
-            self.stop()
+        self.stop()
 
 
 

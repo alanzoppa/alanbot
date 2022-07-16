@@ -37,15 +37,16 @@ void loop() {
   mpu.update();
   float distance = distanceSensor.measureDistanceCm();
 
-  if((millis()-timer)>100){ // print data every 10ms
-  Serial.print("distance : ");
-  Serial.print(distance);
-  Serial.print("\tX : ");
-  Serial.print(mpu.getAngleX());
-  Serial.print("\tY : ");
-  Serial.print(mpu.getAngleY());
-  Serial.print("\tZ : ");
-  Serial.println(mpu.getAngleZ());
+  if((millis()-timer)>10){ // print data every 10ms
+      Serial.print("{\"distance\":");
+      Serial.print(distance);
+      Serial.print(",\"pitch\":");
+      Serial.print(mpu.getAngleX());
+      Serial.print(",\"roll\":");
+      Serial.print(mpu.getAngleY());
+      Serial.print(",\"yaw\":");
+      Serial.print(mpu.getAngleZ());
+      Serial.println("}");
   timer = millis();  
   }
 }

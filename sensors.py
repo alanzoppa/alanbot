@@ -9,26 +9,27 @@ class Sensors():
         self.ser = serial.Serial(port, speed)
         for i in range(10):
             self.ser.readline()
+            #print(self.ser.readline())
 
     def update(self):
+        self.ser.flushInput()
+        self.rawline = self.ser.readline()
+        #print(self.rawline)
         try:
-            self.ser.flushInput()
-            line = json.loads(self.ser.readline())
-            for key, val in line.items():
+            self.line = json.loads(self.rawline)
+            for key, val in self.line.items():
+                #print(key,val)
                 setattr(self, key, val)
         except json.decoder.JSONDecodeError:
-            pass
-
-    def goof(self):
-        pdb.set_trace()
+            print(self.rawline)
 
     def close(self):
         self.ser.close()
 
     def print(self):
-        print(f"distance: {self.distance}, yaw: {self.yaw}")
+        print(self.line)
+        #print(f"distance: {self.distance}, yaw: {self.yaw}")
         
-
 
 
 
@@ -36,18 +37,8 @@ if __name__ == "__main__":
 
     sensors = Sensors('/dev/ttyACM0')
 
-    for i in range(10):
+    while True:
         sensors.update()
         sensors.print()
-    sensors.goof()
-
-    #ser = serial.Serial('/dev/ttyACM0', 9600)
-    #for i in range(10):
-        #try:
-            #line = json.loads(ser.readline())
-            #print(line)
-        #except:
-            #pass
-
 
     sensors.close()
