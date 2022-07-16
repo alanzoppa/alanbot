@@ -15,18 +15,27 @@ if __name__ == "__main__":
 
         car.speed.set(40)
 
-        #car.forward()
-        #sleep(1)
-        #car.reverse()
-        #sleep(1)
-
     except:
         pass
 
-    car.precise_rotate(180)
-    car.precise_rotate(-90)
-    sleep(1)
-    car.precise_rotate(-90)
-    car.stop()
+
+    approach = car.approach()
+    print("Approach: " + str(approach["elapsed"]) + "s")
+
+    #car.forward()
+    #sleep(.5)
+    car.reverse()
+    sleep(approach["elapsed"])
+
+
+
+        #for i in range(4):
+            #car.precise_rotate(45)
+            #sleep(.25)
+
+        #car.precise_rotate(-90)
+        #sleep(.25)
+        #car.precise_rotate(-90)
+        #car.stop()
 
     GPIO.cleanup()

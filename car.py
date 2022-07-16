@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO          
-from time import sleep
+from time import sleep, time
 from copy import copy
 
 class Speed():
@@ -47,6 +47,24 @@ class Car():
     def cleanup(self):
         self.sensors.close()
 
+    def approach(self, distance=20):
+        self.wait_for_sensors()
+        start = time()
+        while 0 < self.sensors.distance > distance:
+            self.forward()
+            self.sensors.update()
+            #print("Distance: " + str(self.sensors.distance) + " cm")
+        end = time()
+        self.stop()
+        return {"elapsed": end-start}
+
+
+    def wait_for_sensors(self):
+        self.sensors.update()
+        while not hasattr(self.sensors, 'yaw'):
+            self.sensors.update()
+            sleep(0.1)
+
 
     def forward(self):
         [m.fw() for m in self.motors]
@@ -58,11 +76,8 @@ class Car():
         [m.stop() for m in self.motors]
 
     def precise_rotate(self,deg):
-        self.sensors.update()
-        while not hasattr(self.sensors, 'yaw'):
-            self.sensors.update()
-            sleep(0.1)
-        target = copy(self.sensors.yaw) + deg
+        self.wait_for_sensors()
+        target = self.sensors.yaw + deg
         if target > self.sensors.yaw:
             while (target > self.sensors.yaw):
                 self.sensors.update()
