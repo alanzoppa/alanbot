@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     car = Car(rf=(23,24,12), rr=(27,22,16), lf=(5,6,20), lr=(19,26,21), sensors=Sensors('/dev/ttyACM0'))
 
-    car.set_speed(60)
+    car.set_speed(40)
 
 
     approach = car.approach()
