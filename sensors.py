@@ -1,7 +1,6 @@
 import serial
 import json
 import pdb
-from time import sleep
 
 
 class Sensors():

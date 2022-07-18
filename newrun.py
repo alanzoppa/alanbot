@@ -13,30 +13,33 @@ if __name__ == "__main__":
 
     car = Car(rf=(23,24,12), rr=(27,22,16), lf=(5,6,20), lr=(19,26,21), sensors=Sensors('/dev/ttyACM0'))
 
-    car.set_speed(40)
+    car.set_speed(50)
 
 
     approach = car.approach()
     print("Approach: " + str(approach["elapsed"]) + "s")
+    car.precise_timed_reverse(approach["elapsed"])
 
     #car.forward()
-    #sleep(1)
+    #sleep(2)
 
     #car.reverse()
+    #sleep(2)
 
     #sleep(approach["elapsed"])
 
-    car.precise_timed_reverse(approach["elapsed"])
 
 
 
+    prev_error = 0
     for i in range(4):
-        car.precise_rotate(45)
+        rotation = car.precise_rotate(45-prev_error)
+        prev_error = rotation['error']
         sleep(.25)
 
-    car.precise_rotate(-90)
-    sleep(.25)
-    car.precise_rotate(-90)
-        #car.stop()
+    for i in range(2):
+        rotation = car.precise_rotate(-90-prev_error)
+        prev_error = rotation['error']
+        sleep(.25)
 
     GPIO.cleanup()

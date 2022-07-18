@@ -94,9 +94,16 @@ class Car():
             self.sensors.update()
             prev_yaw, nxt_yaw = nxt_yaw, self.sensors.yaw
             drift_direction = Car.is_drifting(prev_yaw, nxt_yaw)
+            global_offset = self.sensors.yaw-start_yaw
+            if drift_direction == 0 and (abs(global_offset) > .05):
+                if global_offset > 0:
+                    drift_direction = 1
+                elif global_offset < 0:
+                    drift_direction = -1
+
             self.compensate_drift(drift_direction)
 
-            log = "{:.2f} cm, {:.2f}deg drift, {}".format(self.sensors.distance, (self.sensors.yaw - start_yaw), drift_direction)
+            log = "{:.2f} cm, {:.2f}deg drift, {}".format(self.sensors.distance, global_offset, drift_direction)
             print(log)
 
         self.stop()
@@ -145,17 +152,21 @@ class Car():
         self.set_speed(self.master_speed)
 
     def precise_rotate(self,deg):
+        self.set_speed(40)
         self.wait_for_sensors()
         target = self.sensors.yaw + deg
         if target > self.sensors.yaw:
-            while (target-2 > self.sensors.yaw):
+            while (target > self.sensors.yaw):
                 self.sensors.update()
                 self.rotate(deg)
         elif target < self.sensors.yaw:
-            while (target+2 < self.sensors.yaw):
+            while (target < self.sensors.yaw):
                 self.sensors.update()
                 self.rotate(deg)
         self.stop(hard=True)
+        #print({'error': self.sensors.yaw - target })
+        self.set_speed(self.master_speed)
+        return {'error': self.sensors.yaw - target }
 
 
 
